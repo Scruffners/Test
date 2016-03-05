@@ -1,0 +1,232 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Threading;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Timers;
+using System.Collections;
+using System.Runtime.InteropServices;
+using WindowsInput;
+using WindowsInput.Native;
+
+namespace fmdbinstalller
+{
+    //Button btnRunEditor = new Button();
+    public partial class Form1 : Form
+    {
+        private static ArrayList PremierLeague = new ArrayList();
+        private static string fileName = ".\\clubs.txt";
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            this.btnRunEditor_Click(null, null);
+        }
+
+        [DllImport("user32.dll")]
+        //btnRunEditor.PerformClick();
+        static extern IntPtr SetParent(IntPtr hwx, IntPtr hwp);
+       
+
+        private async void btnRunEditor_Click(object sender, EventArgs e)
+        {
+            btnVisible.Visible = false;
+            Process p = Process.Start("E:/Computer Directory/Program Files (x86)/cm9900/editor/cm9900ed.exe");
+            //Process p = Process.Start("E:/Computer Directory/Program Files (x86)/cm9900/CM3PreEditor.exe");
+            Thread.Sleep(500);
+            p.WaitForInputIdle();
+            SetParent(p.MainWindowHandle, this.Handle);
+            //183
+            /*for(int i = 0; i<183; i++)
+            {
+                SendKeys.Send("{tab}");
+            }*/
+
+            SendKeys.Send("%{f}");
+            SendKeys.Send("{enter}");
+
+            SendKeys.Send("{tab}");
+            p.WaitForInputIdle();
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{left}");
+            SendKeys.Send("{enter}");
+            //p.WaitForInputIdle();
+            //Thread.Sleep(TimeSpan.FromSeconds(0));
+            SendKeys.Send("{enter}");
+            p.WaitForInputIdle();
+            //timer1.Start();
+            //timer1.Stop();
+
+            //System.Timers.Timer aTimer = new System.Timers.Timer();
+            // aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            //aTimer.Interval = 5000;
+            // aTimer.Enabled = true;
+            await Task.Delay(1000);
+            //btnVisible.Visible = true;
+            SendKeys.Send("{esc}");
+            //Thread.Sleep(TimeSpan.FromSeconds(3));
+            SendKeys.Send("{esc}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            /*p.WaitForInputIdle();
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+            SendKeys.Send("{enter}");
+            p.WaitForInputIdle();
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+            SendKeys.Send("{break}");*/
+            //System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
+            //SendKeys.Send("%{tab}");
+            //SendKeys.Send("%{tab}");
+            //SendKeys.Send("{tab}");
+            //SendKeys.Send("index");
+            /*for (int i = 0; i < 6; i++)
+            {
+                SendKeys.Send("{tab}");
+            }
+            SendKeys.Send("{down}");
+            SendKeys.Send("{enter}");*/
+            // Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
+            //load();
+            loadData();
+            Team team = (Team)PremierLeague[1];
+            String Team = team.getName();
+
+            SendKeys.Send(Team);
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{enter}");
+            SendKeys.Send("{down}");
+            SendKeys.Send("{down}");
+            SendKeys.Send("{down}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{down}");
+            SendKeys.Send("{down}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            SendKeys.Send("{tab}");
+            
+            Control nxt = new Control();
+            SelectNextControl(nxt, true, true, true, true);
+            //Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y);
+            SendKeys.Send("{down}");
+            Focus();
+            
+
+            //var coordinates = yourControl.PointToClient(Cursor.Position);
+            await Task.Delay(1000);
+            InputSimulator s = new InputSimulator();
+            s.Mouse.LeftButtonDoubleClick();
+
+        }
+
+        private void control_Enter(object sender, EventArgs e)
+        {
+            if (sender is Control)
+            {
+                var control = (Control)sender;
+                Cursor.Position = control.PointToScreen(new Point()
+                {
+                    X = control.Width / 2,
+                    Y = control.Height / 2
+                });
+            }
+        }
+
+        void SubscribeFocusToControls(Form form)
+        {
+            foreach (Control control in form.Controls)
+            {
+                control.Enter += control_Enter;
+            }
+        }
+
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            throw new NotImplementedException();
+            btnVisible.Visible = true;
+        }
+
+        private void btnTab_Click(object sender, EventArgs e)
+        {
+            SendKeys.Send("{tab}");
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void loadData()
+        {
+            System.IO.StreamReader reader = new System.IO.StreamReader(fileName);
+
+            try
+            {
+                PremierLeague = new ArrayList();
+
+                do
+                {
+                    string fileLine;
+                    fileLine = reader.ReadLine();
+                    string[] wordsOfLine = fileLine.Split(',');
+                    Team team = new Team();
+                    team.setName(wordsOfLine[0]);
+                    PremierLeague.Add(team);
+                } while (reader.Peek() != -1);
+            }
+            catch
+            {
+                ErrorLoad errorLoad = new ErrorLoad();
+                errorLoad.ShowDialog();
+            }
+            finally
+            {
+                reader.Close();
+            }
+        }
+
+        /*public static void load()
+        {
+            p.WaitForInputIdle();
+            Thread.Sleep(TimeSpan.FromSeconds(10));
+            SendKeys.Send("{tab}");
+        }*/
+
+
+
+        //public Control.ControlCollection Controls { get; }
+        // Application application = Application.Launch("E:/Computer Directory/Program Files (x86)/cm9900/CM3PreEditor.exe");
+        //Window window = application.GetWindow("bar", InitializeOption.NoCache);
+
+        //Button button = window.Get<Button>("save");
+        //button.Click();
+    }
+}
