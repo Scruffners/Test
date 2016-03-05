@@ -1,0 +1,26 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace fmdbinstalller
+{
+    class Team
+    {
+        private string teamName;
+
+
+
+        //Getter and setter methods
+        public string getName()
+        {
+            return teamName;
+        }
+
+        public void setName(string newTeamName)
+        {
+            teamName = newTeamName;
+        }
+    }
+}
